@@ -1,4 +1,7 @@
 const buttons = document.querySelectorAll("#btn");
+const popup = document.getElementById("popup");
+const result = document.getElementById("winnerText");
+const restartBtn = document.getElementById("restartBtn");
 
 let turn = "X";
 let gameOver = false;
@@ -21,19 +24,18 @@ buttons.forEach((button, index) => {
   });
 });
 
-function play(button, index) {
-  button.innerText = turn;
-  if(checkWin()){
-    alert(turn +" "+"Win")
-    return;
-  };
-  
-  
-  turn = (turn === "X") ? "O" : "X";
-  
-  
-}
+function play(button){
 
+  button.disabled = true;
+
+  button.innerText = turn;
+  
+  if(checkWin()){
+    return;
+  }
+ checkDraw();
+  turn = (turn == "X") ? "O" : "X";
+}
 
 function checkWin(){
   for (var i in winPattern){
@@ -47,7 +49,7 @@ function checkWin(){
        buttons[b].innerText == buttons[c].innerText && 
       buttons[a].innerText != ""
     ){
-      
+      showWinner(buttons[a].innerText);
       return true;
     }
   
@@ -56,6 +58,45 @@ function checkWin(){
   
 }
 
+function showWinner(player){
+
+  result.innerHTML = "🎉 Player " + player + " Wins!";
+
+  popup.classList.remove("hide");
+
+}
 
 
+restartBtn.addEventListener("click",()=>{
+  buttons.forEach((button,index)=>{
+    button.disabled = false;
+    button.innerText = "";
+    popup.classList.add("hide");
+  });
+});
 
+function checkDraw() {
+  let filled = true;
+
+  buttons.forEach((button) => {
+    if (button.innerText == "") {
+      filled = false;
+    }
+  });
+
+  if (filled) {
+    onDraw();
+  }
+}
+
+function onDraw(){
+  buttons.forEach((button,index)=>{
+    draw();
+    
+  });
+}
+
+function draw(){
+  result.innerHTML="🎉 Draw";
+  popup.classList.remove("hide");
+}
